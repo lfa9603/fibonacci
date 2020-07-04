@@ -1,0 +1,25 @@
+sudo: required
+
+services:
+    - docker
+
+# Testing
+before-install:
+    - docker build -t lorenzofasano96/fibonacci-test -f ./client/Dockerfile.dev ./client
+
+script:
+    - docker run lorenzofasano96/fibonacci-test -- --coverage
+
+# Building prod versions
+after_success:
+    - docker build -t lorenzofasano96/multi-client ./client
+    - docker build -t lorenzofasano96/multi-nginx ./nginx
+    - docker build -t lorenzofasano96/multi-api ./api
+    - docker build -t lorenzofasano96/multi-worker ./worker
+
+    # Log into docker cli
+    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+    - docker push lorenzofasano96/multi-client
+    - docker push lorenzofasano96/multi-nginx
+    - docker push lorenzofasano96/multi-worker
+    - docker push lorenzofasano96/multi-api
