@@ -8,7 +8,7 @@ before-install:
     - docker build -t lorenzofasano96/fibonacci-test -f ./client/Dockerfile.dev ./client
 
 script:
-    - docker run lorenzofasano96/fibonacci-test -- --coverage
+    - docker run lorenzofasano96/fibonacci-test npm test -- --coverage
 
 # Building prod versions
 after_success:
